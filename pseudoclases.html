@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pseudoclases de CSS con maquetación</title>
+
+  <style>
+    /* ==========================================================
+       BASE Y MAQUETACIÓN GENERAL
+       ========================================================== */
+    :root {                                   /* :root = el <html> */
+      --azul: #2563eb;
+      --azul-oscuro: #1e3a8a;
+      --gris: #f1f5f9;
+      --borde: #cbd5e1;
+      --texto: #1e293b;
+      --ok: #16a34a;
+      --error: #dc2626;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--texto);
+      background: #fff;
+      line-height: 1.5;
+    }
+
+    header {
+      background: var(--azul-oscuro);
+      color: #fff;
+      padding: 24px 20px;
+      text-align: center;
+    }
+    header h1 { margin: 0 0 4px; }
+    header p { margin: 0; opacity: .85; }
+
+    /* Layout: menú lateral + contenido */
+    .layout {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 24px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    nav {
+      position: sticky;
+      top: 16px;
+      align-self: start;
+      background: var(--gris);
+      border-radius: 10px;
+      padding: 14px;
+    }
+    nav h2 { font-size: 1rem; margin: 0 0 8px; }
+    nav ul { list-style: none; margin: 0; padding: 0; }
+    nav a { display: block; padding: 6px 10px; border-radius: 6px; text-decoration: none; color: var(--texto); }
+
+    main section {
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 24px;
+      scroll-margin-top: 16px;
+    }
+    main section h2 { margin-top: 0; color: var(--azul-oscuro); }
+
+    /* Rejilla de tarjetas de demostración */
+    .rejilla {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .demo {
+      background: var(--gris);
+      border-radius: 10px;
+      padding: 12px;
+    }
+    .demo h3 { margin: 0 0 8px; font-size: .95rem; }
+    code { background: #e2e8f0; padding: 1px 5px; border-radius: 4px; font-size: .85em; }
+
+    footer { text-align: center; padding: 20px; background: var(--gris); }
+
+    @media (max-width: 800px) {
+      .layout { grid-template-columns: 1fr; }
+      nav { position: static; }
+    }
+
+    /* ==========================================================
+       1. INTERACCIÓN DEL USUARIO
+       ========================================================== */
+    nav a:hover { background: var(--azul); color: #fff; }               /* :hover */
+    .btn-activo { padding: 8px 14px; border: 0; border-radius: 6px; background: var(--azul); color: #fff; cursor: pointer; }
+    .btn-activo:hover { background: var(--azul-oscuro); }
+    .btn-activo:active { transform: scale(.92); }                        /* :active */
+    .campo:focus { outline: 3px solid var(--azul); }                     /* :focus */
+    .btn-activo:focus-visible { outline: 3px solid orange; outline-offset: 2px; } /* :focus-visible */
+    .grupo:focus-within { background: #dbeafe; outline: 2px solid var(--azul); }  /* :focus-within */
+    section:target { background: #fef9c3; border-color: #eab308; }       /* :target */
+
+    /* ==========================================================
+       2. ENLACES
+       ========================================================== */
+    .enlaces a:link { color: var(--azul); }                              /* :link */
+    .enlaces a:visited { color: purple; }                                /* :visited */
+    .enlaces a:any-link { font-weight: bold; }                           /* :any-link */
+
+    /* ==========================================================
+       3. ESTRUCTURALES
+       ========================================================== */
+    .lista-a li { padding: 4px 8px; }
+    .lista-a li:first-child { background: #bbf7d0; }                     /* :first-child */
+    .lista-a li:last-child { background: #fecaca; }                      /* :last-child */
+
+    .lista-b li { padding: 4px 8px; }
+    .lista-b li:nth-child(odd) { background: #e0f2fe; }                  /* :nth-child(odd) */
+    .lista-b li:nth-child(even) { background: #fff; }                    /* :nth-child(even) */
+    .lista-b li:nth-child(3n) { color: var(--error); font-weight: bold; }/* :nth-child(3n) */
+    .lista-b li:nth-last-child(2) { text-decoration: underline; }        /* :nth-last-child(2) */
+
+    .solo li { padding: 4px 8px; }
+    .solo li:only-child { background: #fde68a; }                         /* :only-child */
+
+    .tipos p { margin: 4px 0; }
+    .tipos p:first-of-type { color: var(--ok); }                         /* :first-of-type */
+    .tipos p:last-of-type { color: var(--error); }                       /* :last-of-type */
+    .tipos p:nth-of-type(2) { font-style: italic; }                      /* :nth-of-type(2) */
+
+    .caja-vacia { border: 2px dashed var(--borde); padding: 10px; }
+    .caja-vacia:empty::before { content: "Estoy vacía (:empty)"; color: gray; } /* :empty */
+
+    table { width: 100%; border-collapse: collapse; background: #fff; }
+    th, td { padding: 6px 10px; text-align: left; }
+    thead th { background: var(--azul-oscuro); color: #fff; }
+    tbody tr:nth-child(even) { background: var(--gris); }                /* filas alternas */
+    tbody tr:hover { background: #dbeafe; }                              /* fila bajo el mouse */
+
+    /* ==========================================================
+       4. FORMULARIOS
+       ========================================================== */
+    label { display: block; font-size: .85rem; margin: 8px 0 2px; }
+    input[type="text"], input[type="email"], input[type="number"], select {
+      width: 100%; padding: 7px; border: 2px solid var(--borde); border-radius: 6px; background: #fff;
+    }
+
+    .f-habilitado:enabled { background: #fff; }                          /* :enabled */
+    .f-habilitado:disabled { background: #e2e8f0; cursor: not-allowed; } /* :disabled */
+    input[type="checkbox"]:checked + span { color: var(--ok); font-weight: bold; } /* :checked */
+    input[type="checkbox"]:indeterminate + span { color: orange; }       /* :indeterminate */
+    input[type="checkbox"]:default + span { text-decoration: underline; }/* :default */
+    .f-req:required { border-left: 6px solid var(--error); }             /* :required */
+    .f-req:optional { border-left: 6px solid gray; }                     /* :optional */
+    .f-lectura:read-only { background: #e2e8f0; }                        /* :read-only */
+    .f-lectura:read-write { background: #fff; }                          /* :read-write */
+    .f-ph:placeholder-shown { border-color: orange; }                    /* :placeholder-shown */
+    .f-valid:valid { border-color: var(--ok); }                          /* :valid */
+    .f-valid:invalid { border-color: var(--error); }                     /* :invalid */
+    .f-user:user-valid { border-color: var(--ok); }                      /* :user-valid */
+    .f-user:user-invalid { border-color: var(--error); }                 /* :user-invalid */
+    .f-rango:in-range { border-color: var(--ok); }                      /* :in-range */
+    .f-rango:out-of-range { border-color: var(--error); }               /* :out-of-range */
+    .f-auto:autofill { background: #fef9c3; }                            /* :autofill */
+
+    /* ==========================================================
+       5. LÓGICAS
+       ========================================================== */
+    :is(.l-is h4, .l-is h5) { color: var(--azul); margin: 4px 0; }       /* :is() */
+    :where(.l-where) { padding: 8px; }                                   /* :where() especificidad 0 */
+    .l-not li:not(.activo) { opacity: .4; }                              /* :not() */
+    .l-has .tarjeta { border: 2px solid var(--borde); padding: 8px; margin-bottom: 6px; border-radius: 6px; background: #fff; }
+    .l-has .tarjeta:has(strong) { border-color: var(--ok); }             /* :has() */
+
+    /* ==========================================================
+       6. IDIOMA Y DIRECCIÓN
+       ========================================================== */
+    .idioma p:lang(es) { color: var(--ok); }                             /* :lang(es) */
+    .idioma p:lang(en) { color: var(--azul); font-style: italic; }       /* :lang(en) */
+    .idioma p:dir(rtl) { background: #fde68a; }                          /* :dir(rtl) */
+
+    /* ==========================================================
+       7. PANTALLA, DIÁLOGOS Y POPOVER
+       ========================================================== */
+    #pantalla { background: #fff; padding: 12px; border-radius: 8px; }
+    #pantalla:fullscreen { background: var(--azul-oscuro); color: #fff; display: grid; place-content: center; } /* :fullscreen */
+
+    dialog { border: 2px solid var(--azul); border-radius: 10px; padding: 20px; }
+    dialog:modal { box-shadow: 0 0 0 100vmax rgba(0,0,0,.4); }           /* :modal */
+    dialog:open { background: #f8fafc; }                                 /* :open */
+    details { background: #fff; border: 1px solid var(--borde); border-radius: 6px; padding: 8px; }
+    details:open { background: #dcfce7; }                                /* details :open */
+    [popover] { padding: 14px; border-radius: 8px; border: 2px solid var(--azul); }
+    [popover]:popover-open { background: #eff6ff; }                      /* :popover-open */
+
+    /* ==========================================================
+       8. COMPONENTES PERSONALIZADOS
+       ========================================================== */
+    mi-componente:not(:defined) { opacity: .35; }                        /* :not(:defined) */
+    mi-componente:defined { opacity: 1; color: var(--ok); font-weight: bold; } /* :defined */
+
+    /* ==========================================================
+       SOLO REFERENCIA (necesitan video, JS o Shadow DOM)
+       Descomenta y adapta si los necesitas:
+
+       video:playing { outline: 2px solid green; }
+       video:paused { outline: 2px solid orange; }
+       video:seeking { opacity: .8; }
+       video:buffering { opacity: .6; }
+       video:stalled { opacity: .5; }
+       video:muted { outline: 2px solid gray; }
+       video:volume-locked { outline: 2px solid black; }
+       video:picture-in-picture { outline: 2px solid red; }
+       a:local-link { font-weight: bold; }
+       section:target-within { border: 1px solid red; }
+       input:blank { background: #fafafa; }
+       :host { display: block; }
+       :host(.activo) { color: green; }
+       :host-context(.oscuro) { color: white; }
+       mi-componente:state(abierto) { color: blue; }
+       :active-view-transition { cursor: progress; }
+       ::cue(:past) { color: gray; }
+       ::cue(:future) { color: white; }
+       :scope { outline: 1px dashed gray; }
+       ========================================================== */
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <h1>Pseudoclases de CSS</h1>
+    <p>Pasa el mouse, haz clic, escribe y usa el teclado (Tab) para ver cada una en acción.</p>
+  </header>
+
+  <div class="layout">
+
+    <!-- ===================== MENÚ LATERAL ===================== -->
+    <nav>
+      <h2>Contenido</h2>
+      <ul>
+        <li><a href="#interaccion">1. Interacción</a></li>
+        <li><a href="#enlaces">2. Enlaces</a></li>
+        <li><a href="#estructurales">3. Estructurales</a></li>
+        <li><a href="#formularios">4. Formularios</a></li>
+        <li><a href="#logicas">5. Lógicas</a></li>
+        <li><a href="#idioma">6. Idioma y dirección</a></li>
+        <li><a href="#pantalla">7. Pantalla y diálogos</a></li>
+        <li><a href="#componentes">8. Componentes</a></li>
+      </ul>
+    </nav>
+
+    <!-- ===================== CONTENIDO ===================== -->
+    <main>
+
+      <!-- 1. INTERACCIÓN -->
+      <section id="interaccion">
+        <h2>1. Interacción del usuario</h2>
+        <div class="rejilla">
+          <div class="demo">
+            <h3><code>:hover</code> y <code>:active</code></h3>
+            <button class="btn-activo">Pasa el mouse y haz clic sostenido</button>
+          </div>
+          <div class="demo">
+            <h3><code>:focus</code></h3>
+            <input class="campo" type="text" placeholder="Haz clic aquí">
+          </div>
+          <div class="demo">
+            <h3><code>:focus-visible</code></h3>
+            <button class="btn-activo">Usa Tab para llegar aquí</button>
+          </div>
+          <div class="demo grupo">
+            <h3><code>:focus-within</code></h3>
+            <input class="campo" type="text" placeholder="Escribe aquí (el contenedor cambia)">
+          </div>
+          <div class="demo">
+            <h3><code>:target</code></h3>
+            <p>Haz clic en el menú: la sección elegida se resalta en amarillo.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. ENLACES -->
+      <section id="enlaces">
+        <h2>2. Enlaces</h2>
+        <div class="rejilla">
+          <div class="demo enlaces">
+            <h3><code>:link</code>, <code>:visited</code>, <code>:any-link</code></h3>
+            <p><a href="https://developer.mozilla.org/es/docs/Web/CSS/Pseudo-classes" target="_blank">MDN: Pseudoclases</a></p>
+            <p><a href="https://www.w3schools.com/css/css_pseudo_classes.asp" target="_blank">W3Schools: Pseudoclases</a></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. ESTRUCTURALES -->
+      <section id="estructurales">
+        <h2>3. Estructurales</h2>
+        <div class="rejilla">
+          <div class="demo">
+            <h3><code>:first-child</code> y <code>:last-child</code></h3>
+            <ul class="lista-a"><li>Primero</li><li>Segundo</li><li>Tercero</li><li>Último</li></ul>
+          </div>
+          <div class="demo">
+            <h3><code>:nth-child()</code> y <code>:nth-last-child()</code></h3>
+            <ul class="lista-b">
+              <li>1</li><li>2</li><li>3 (3n)</li><li>4</li><li>5</li><li>6 (3n)</li><li>7</li><li>8 (penúltimo)</li><li>9 (3n)</li>
+            </ul>
+          </div>
+          <div class="demo">
+            <h3><code>:only-child</code></h3>
+            <ul class="solo"><li>Soy el único hijo</li></ul>
+          </div>
+          <div class="demo tipos">
+            <h3><code>:first-of-type</code>, <code>:last-of-type</code>, <code>:nth-of-type()</code></h3>
+            <p>Primer párrafo</p><p>Segundo párrafo</p><p>Tercer párrafo</p>
+          </div>
+          <div class="demo">
+            <h3><code>:empty</code></h3>
+            <div class="caja-vacia"></div>
+          </div>
+          <div class="demo" style="grid-column: 1 / -1;">
+            <h3>Tabla con filas alternas y <code>:hover</code></h3>
+            <table>
+              <thead><tr><th>#</th><th>Nombre</th><th>Rol</th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td>Ana</td><td>Solicitante</td></tr>
+                <tr><td>2</td><td>Bruno</td><td>Solicitante</td></tr>
+                <tr><td>3</td><td>Lina</td><td>Técnico</td></tr>
+                <tr><td>4</td><td>Omar</td><td>Técnico</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. FORMULARIOS -->
+      <section id="formularios">
+        <h2>4. Formularios</h2>
+        <div class="rejilla">
+          <div class="demo">
+            <h3><code>:enabled</code> y <code>:disabled</code></h3>
+            <input class="f-habilitado" type="text" value="Habilitado">
+            <input class="f-habilitado" type="text" value="Deshabilitado" disabled style="margin-top:6px">
+          </div>
+          <div class="demo">
+            <h3><code>:checked</code>, <code>:indeterminate</code>, <code>:default</code></h3>
+            <label><input type="checkbox"> <span>Marcable (:checked)</span></label>
+            <label><input type="checkbox" id="indet"> <span>Indeterminada</span></label>
+            <label><input type="checkbox" checked> <span>Marcada por defecto (:default)</span></label>
+          </div>
+          <div class="demo">
+            <h3><code>:required</code> y <code>:optional</code></h3>
+            <input class="f-req" type="text" placeholder="Obligatorio" required>
+            <input class="f-req" type="text" placeholder="Opcional" style="margin-top:6px">
+          </div>
+          <div class="demo">
+            <h3><code>:read-only</code> y <code>:read-write</code></h3>
+            <input class="f-lectura" type="text" value="Solo lectura" readonly>
+            <input class="f-lectura" type="text" value="Editable" style="margin-top:6px">
+          </div>
+          <div class="demo">
+            <h3><code>:placeholder-shown</code></h3>
+            <input class="f-ph" type="text" placeholder="Escribe y el borde cambia">
+          </div>
+          <div class="demo">
+            <h3><code>:valid</code> y <code>:invalid</code></h3>
+            <input class="f-valid" type="email" placeholder="correo@ejemplo.com" required>
+          </div>
+          <div class="demo">
+            <h3><code>:user-valid</code> y <code>:user-invalid</code></h3>
+            <input class="f-user" type="email" placeholder="Escribe y sal del campo" required>
+          </div>
+          <div class="demo">
+            <h3><code>:in-range</code> y <code>:out-of-range</code></h3>
+            <input class="f-rango" type="number" min="1" max="10" value="5">
+            <small>Prueba valores del 1 al 10 y fuera de ese rango.</small>
+          </div>
+          <div class="demo">
+            <h3><code>:autofill</code></h3>
+            <input class="f-auto" type="email" name="email" autocomplete="email" placeholder="Autocompleta con el navegador">
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. LÓGICAS -->
+      <section id="logicas">
+        <h2>5. Lógicas</h2>
+        <div class="rejilla">
+          <div class="demo l-is">
+            <h3><code>:is()</code></h3>
+            <h4>Título h4</h4>
+            <h5>Título h5</h5>
+          </div>
+          <div class="demo l-not">
+            <h3><code>:not()</code></h3>
+            <ul>
+              <li class="activo">Activo</li>
+              <li>Inactivo</li>
+              <li>Inactivo</li>
+            </ul>
+          </div>
+          <div class="demo l-has">
+            <h3><code>:has()</code></h3>
+            <div class="tarjeta">Tarjeta sin negrita</div>
+            <div class="tarjeta">Tarjeta con <strong>negrita</strong> (borde verde)</div>
+          </div>
+          <div class="demo">
+            <h3><code>:where()</code></h3>
+            <div class="l-where">Aplica estilos con especificidad cero.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. IDIOMA -->
+      <section id="idioma">
+        <h2>6. Idioma y dirección</h2>
+        <div class="rejilla">
+          <div class="demo idioma">
+            <h3><code>:lang()</code> y <code>:dir()</code></h3>
+            <p lang="es">Texto en español</p>
+            <p lang="en">Text in English</p>
+            <p dir="rtl">Texto con dirección derecha a izquierda</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. PANTALLA -->
+      <section id="pantalla-sec">
+        <h2>7. Pantalla, diálogos y popover</h2>
+        <div class="rejilla">
+          <div class="demo">
+            <h3><code>:fullscreen</code></h3>
+            <div id="pantalla">
+              <p>Contenido en pantalla completa</p>
+              <button class="btn-activo" id="btn-full">Pantalla completa</button>
+            </div>
+          </div>
+          <div class="demo">
+            <h3><code>:modal</code> y <code>:open</code></h3>
+            <button class="btn-activo" id="btn-dialogo">Abrir diálogo</button>
+            <dialog id="dialogo">
+              <p>Soy un diálogo modal.</p>
+              <button class="btn-activo" id="btn-cerrar">Cerrar</button>
+            </dialog>
+          </div>
+          <div class="demo">
+            <h3><code>details:open</code></h3>
+            <details>
+              <summary>Haz clic para abrir</summary>
+              <p>Contenido desplegado.</p>
+            </details>
+          </div>
+          <div class="demo">
+            <h3><code>:popover-open</code></h3>
+            <button class="btn-activo" popovertarget="mi-popover">Mostrar popover</button>
+            <div id="mi-popover" popover>Soy un popover abierto.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. COMPONENTES -->
+      <section id="componentes">
+        <h2>8. Componentes personalizados</h2>
+        <div class="rejilla">
+          <div class="demo">
+            <h3><code>:defined</code></h3>
+            <mi-componente>Componente personalizado</mi-componente>
+            <p><button class="btn-activo" id="btn-registrar">Registrar componente</button></p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <footer>Archivo de práctica de pseudoclases de CSS</footer>
+
+  <script>
+    // :indeterminate solo se activa desde JavaScript
+    document.getElementById('indet').indeterminate = true;
+
+    // :fullscreen
+    document.getElementById('btn-full').addEventListener('click', () => {
+      document.getElementById('pantalla').requestFullscreen();
+    });
+
+    // :modal y :open
+    const dialogo = document.getElementById('dialogo');
+    document.getElementById('btn-dialogo').addEventListener('click', () => dialogo.showModal());
+    document.getElementById('btn-cerrar').addEventListener('click', () => dialogo.close());
+
+    // :defined
+    document.getElementById('btn-registrar').addEventListener('click', () => {
+      if (!customElements.get('mi-componente')) {
+        customElements.define('mi-componente', class extends HTMLElement {});
+      }
+    });
+  </script>
+</body>
+</html>
